@@ -17,6 +17,8 @@ const origin = host
 const referer = origin + "/"
 const appName = "CampusNet"
 
+const defaultTimeout = 15 * time.Second
+
 var reRefresh = regexp.MustCompile(`ARGUMENTS=-N(\d+),-N(\d+)`)
 var reFiletransfer = regexp.MustCompile(`href=["'](\/scripts\/filetransfer\.exe\?\S+)["']`)
 
@@ -34,7 +36,7 @@ func NewAccount() Account {
 	}
 
 	client := &http.Client{
-		Timeout: 15 * time.Second,
+		Timeout: defaultTimeout,
 		Jar:     jar,
 	}
 

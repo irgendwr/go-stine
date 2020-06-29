@@ -15,6 +15,11 @@ func (acc *Account) SetTransport(trans *http.Transport) {
 	acc.client.Transport = trans
 }
 
+// SetTimeout sets the time limit for requests.
+func (acc *Account) SetTimeout(timeout time.Duration) {
+	acc.client.Timeout = timeout
+}
+
 // DoFormRequest performs an HTTP POST request with form data.
 func (acc *Account) DoFormRequest(data url.Values) (*http.Response, error) {
 	req, err := http.NewRequest("POST", apiURL, strings.NewReader(data.Encode()))
