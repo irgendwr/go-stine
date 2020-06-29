@@ -1,0 +1,61 @@
+project_name: stine
+env:
+  - GO111MODULE=on
+before:
+  hooks:
+    - go mod download
+    #- go generate ./...
+builds:
+  -
+    binary: stine
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -trimpath
+      - -v
+    ldflags:
+      - -s -w
+      - -X github.com/irgendwr/go-stine/cmd.version={{.Version}}
+      - -X github.com/irgendwr/go-stine/cmd.commit={{.Commit}}
+      - -X github.com/irgendwr/go-stine/cmd.date={{.Date}}
+      - -X 'github.com/irgendwr/go-stine/cmd.builtBy=goreleaser{{ if index .Env "GOVERSION" }} with {{.Env.GOVERSION}}{{ end }}'
+    goos:
+      - linux
+      #- darwin
+      - windows
+    goarch:
+      - amd64
+      #- 386
+      #- arm
+      #- arm64
+    ignore:
+      - goos: darwin
+        goarch: 386
+release:
+  draft: true
+archives:
+- name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+  replacements:
+    darwin: Darwin
+    linux: Linux
+    windows: Windows
+    386: i386
+    amd64: x86_64
+  format_overrides:
+    - goos: windows
+      format: zip
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ .Tag }}-next"
+changelog:
+  #skip: true
+  sort: asc
+  filters:
+    exclude:
+    - '^docs:'
+    - '^test:'
+    - '^chore:'
+    - '^typo:'
+    - Merge pull request
+    - Merge branch

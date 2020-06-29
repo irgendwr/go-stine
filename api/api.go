@@ -43,11 +43,6 @@ func NewAccount() Account {
 	}
 }
 
-// SetTransport configures the transport options of the http client.
-func (acc *Account) SetTransport(trans *http.Transport) {
-	acc.client.Transport = trans
-}
-
 // Login starts a new session.
 func (acc *Account) Login(user, pass string) error {
 	res, err := acc.DoFormRequest(url.Values{
