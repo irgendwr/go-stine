@@ -33,6 +33,12 @@ var cfgFile string
 // printVersion is true when version flag is set
 var printVersion bool
 
+// semester is a flag used to specify a semester for: exams, examresults
+var semester string
+
+// output is a flag used to specify an output file for: sheduler export
+var output string
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   appname,
@@ -66,10 +72,16 @@ func init() {
 	// Define flags
 	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "config file (default is "+defaultCfgFile+"."+defaultCfgFileType+" in program dir, CWD or $HOME)")
 	rootCmd.PersistentFlags().StringP("username", "u", "", "username")
+	rootCmd.PersistentFlags().BoolP("nocache", "n", true, "disable session cache")
 	rootCmd.Flags().BoolVarP(&printVersion, "version", "v", false, "show version and exit")
 
 	// Bind flags to config values
 	viper.BindPFlag("username", rootCmd.PersistentFlags().Lookup("username"))
+	viper.BindPFlag("nocache", rootCmd.PersistentFlags().Lookup("nocache"))
+
+	viper.SetDefault("username", "")
+	viper.SetDefault("password", "")
+	viper.SetDefault("nocache", false)
 }
 
 // initConfig reads in config file and ENV variables if set.

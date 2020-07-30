@@ -1,18 +1,11 @@
-/*
-Copyright © 2020 Jonas Bögle
-
-*/
 package cmd
 
 import (
 	"fmt"
 	"os"
 
-	"github.com/irgendwr/go-stine/api"
 	"github.com/spf13/cobra"
 )
-
-var output string
 
 // exportCmd represents the export command
 var exportCmd = &cobra.Command{
@@ -30,9 +23,7 @@ By default the scheduler will be exported as an UTF-16 LE encoded .ics file name
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 1 {
-			username, password := credentials()
-			acc := api.NewAccount()
-			err := acc.Login(username, password)
+			acc, err := login()
 			if err != nil {
 				fmt.Printf("Unable to log-in: %s\n", err)
 				os.Exit(1)

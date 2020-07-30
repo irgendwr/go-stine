@@ -21,7 +21,7 @@ curl -O -L https://github.com/irgendwr/go-stine/releases/latest/download/stine_L
 tar -xvzf stine_Linux_x86_64.tar.gz
 ```
 
-Create a file called `.stine.yaml` inside this folder (e.g. using `nano .stine.yaml`) and edit it to fit your needs.
+Create a file called `.stine.yaml` (either inside your home folder or the folder containing the program) (e.g. using `nano ~/.stine.yaml`) and edit it to fit your needs.
 See [config](#config) section for examples.
 
 ### Config
@@ -31,8 +31,8 @@ See [config](#config) section for examples.
 Example:
 
 ```yaml
-Username: baw1234
-Password: your-password-here
+username: baw1234
+password: your-password-here
 ```
 
 ## Usage

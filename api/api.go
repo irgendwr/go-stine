@@ -6,8 +6,10 @@ import (
 	"net/http/cookiejar"
 	"net/url"
 	"regexp"
+	"strings"
 	"time"
 
+	"github.com/PuerkitoBio/goquery"
 	"github.com/pkg/errors"
 )
 
@@ -21,6 +23,9 @@ const defaultTimeout = 15 * time.Second
 
 var reRefresh = regexp.MustCompile(`ARGUMENTS=-N(\d+),-N(\d+)`)
 var reFiletransfer = regexp.MustCompile(`href=["'](\/scripts\/filetransfer\.exe\?\S+)["']`)
+var reSpace = regexp.MustCompile(`\s+`)
+var reNewLine = regexp.MustCompile(`\s*[\r\n]\s*`)
+var reBr = regexp.MustCompile(`<br\S*/?>`)
 
 var cnscCookieURL = url.URL{
 	Scheme: "https",
@@ -152,4 +157,78 @@ func (acc *Account) SchedulerExport(date string) (string, error) {
 	}
 
 	return host + match[1], nil
+}
+
+// Exams returns an array of exams, each with: ID, Name, Type, Date.
+// semesterID can be empty (for the current semester), or and ID such as "099999904632582" (SoSe20), "999" (all)
+func (acc *Account) Exams(semesterID string) ([][]string, error) {
+	var exams [][]string
+
+	res, err := acc.DoFormRequest(url.Values{
+		"APPNAME":   {appName},
+		"PRGNAME":   {"MYEXAMS"},
+		"ARGUMENTS": {"sessionno,menuid,semester"},
+		"sessionno": {acc.session},
+		"menuid":    {"000000"}, // orig: 000316
+		"semester":  {semesterID},
+	})
+	if err != nil {
+		return exams, err
+	}
+
+	defer res.Body.Close()
+
+	document, err := goquery.NewDocumentFromReader(res.Body)
+	if err != nil {
+		return exams, err
+	}
+
+	scrapeTableBody(document, func(i int, tr *goquery.Selection) {
+		var exam []string
+		tr.Find("td").Each(func(j int, td *goquery.Selection) {
+			if j < 4 {
+				exam = append(exam, strings.SplitN(scrapeText(td), "\n", 2)[0])
+			}
+		})
+		exams = append(exams, exam)
+	})
+
+	return exams, nil
+}
+
+// Examresults returns an array of exam results, each with: (ID+Name), Date, Grade, Grade text
+// semesterID can be empty (for the current semester), or and ID such as "099999904632582" (SoSe20), "999" (all)
+func (acc *Account) Examresults(semesterID string) ([][]string, error) {
+	var exams [][]string
+
+	res, err := acc.DoFormRequest(url.Values{
+		"APPNAME":   {appName},
+		"PRGNAME":   {"EXAMRESULTS"},
+		"ARGUMENTS": {"sessionno,menuid,semester"},
+		"sessionno": {acc.session},
+		"menuid":    {"000000"}, // orig: 000316
+		"semester":  {semesterID},
+	})
+	if err != nil {
+		return exams, err
+	}
+
+	defer res.Body.Close()
+
+	document, err := goquery.NewDocumentFromReader(res.Body)
+	if err != nil {
+		return exams, err
+	}
+
+	scrapeTableBody(document, func(i int, tr *goquery.Selection) {
+		var exam []string
+		tr.Find("td").Each(func(j int, td *goquery.Selection) {
+			if j < 4 {
+				exam = append(exam, strings.SplitN(scrapeText(td), "\n", 2)[0])
+			}
+		})
+		exams = append(exams, exam)
+	})
+
+	return exams, nil
 }
