@@ -22,5 +22,6 @@ dist/
 # vscode settings
 .vscode/
 
+go-stine
 stine
 .stine.yaml
