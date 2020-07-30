@@ -22,6 +22,12 @@ const defaultTimeout = 15 * time.Second
 var reRefresh = regexp.MustCompile(`ARGUMENTS=-N(\d+),-N(\d+)`)
 var reFiletransfer = regexp.MustCompile(`href=["'](\/scripts\/filetransfer\.exe\?\S+)["']`)
 
+var cnscCookieURL = url.URL{
+	Scheme: "https",
+	Host:   "www.stine.uni-hamburg.de",
+	Path:   "/scripts",
+}
+
 // Account represents a STiNE account.
 type Account struct {
 	client  *http.Client
@@ -69,6 +75,50 @@ func (acc *Account) Login(user, pass string) error {
 		return errors.New("invalid refresh")
 	}
 	acc.session = match[1]
+
+	return nil
+}
+
+// Session returns the current session ID and cookie.
+func (acc *Account) Session() (string, string) {
+	return acc.session, acc.client.Jar.Cookies(&cnscCookieURL)[0].Value
+}
+
+// SetSession allows you to reuse a session ID and cookie.
+func (acc *Account) SetSession(id, cnsc string) {
+	acc.session = id
+	acc.client.Jar.SetCookies(&cnscCookieURL, []*http.Cookie{
+		{
+			Name:  "cnsc",
+			Value: cnsc,
+		},
+	})
+}
+
+// SessionValid checks if the current session is valid.
+func (acc *Account) SessionValid() error {
+	res, err := acc.DoFormRequest(url.Values{
+		"APPNAME":   {appName},
+		"PRGNAME":   {"EXTERNALPAGES"},
+		"ARGUMENTS": {"-N" + acc.session},
+	})
+	if err != nil {
+		return err
+	}
+
+	defer res.Body.Close()
+
+	html, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return err
+	}
+
+	if strings.Contains(string(html), "<h1>Timeout!</h1>") {
+		return errors.New("timeout")
+	}
+	if strings.Contains(string(html), "<h1>Zugang verweigert</h1>") {
+		return errors.New("invalid")
+	}
 
 	return nil
 }
