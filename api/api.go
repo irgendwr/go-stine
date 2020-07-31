@@ -196,7 +196,7 @@ func (acc *Account) Exams(semesterID string) ([][]string, error) {
 	return exams, nil
 }
 
-// Examresults returns an array of exam results, each with: (ID+Name), Date, Grade, Grade text
+// Examresults returns an array of exam results, each with: (ID+Name), Date, Grade, Grade text.
 // semesterID can be empty (for the current semester), or and ID such as "099999904632582" (SoSe20), "999" (all)
 func (acc *Account) Examresults(semesterID string) ([][]string, error) {
 	var exams [][]string

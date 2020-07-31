@@ -10,6 +10,11 @@ import (
 	"golang.org/x/net/http/httpguts"
 )
 
+// SetClient sets the http client.
+func (acc *Account) SetClient(client *http.Client) {
+	acc.client = client
+}
+
 // SetTransport configures the transport options of the http client.
 func (acc *Account) SetTransport(trans *http.Transport) {
 	acc.client.Transport = trans
