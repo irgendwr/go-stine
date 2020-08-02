@@ -67,7 +67,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "Config file (default is "+defaultCfgFile+"."+defaultCfgFileType+" in program dir, CWD or $HOME)")
 	rootCmd.PersistentFlags().StringP("username", "u", "", "Username")
 	rootCmd.PersistentFlags().BoolP("nocache", "n", true, "Disable session cache")
-	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "w", false, "Provide a more verbose output")
+	rootCmd.PersistentFlags().BoolVar(&verbose, "verbose", false, "Provide a more verbose output")
 	rootCmd.Flags().BoolVarP(&printVersion, "version", "v", false, "Show version and exit")
 
 	// Bind flags to config values
