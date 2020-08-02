@@ -196,9 +196,9 @@ func (acc *Account) Exams(semesterID string) ([][]string, error) {
 	return exams, nil
 }
 
-// Examresults returns an array of exam results, each with: (ID+Name), Date, Grade, Grade text.
+// ExamResults returns an array of exam results, each with: ID, Name, Date, Grade, Grade text.
 // semesterID can be empty (for the current semester), or and ID such as "099999904632582" (SoSe20), "999" (all)
-func (acc *Account) Examresults(semesterID string) ([][]string, error) {
+func (acc *Account) ExamResults(semesterID string) ([][]string, error) {
 	var exams [][]string
 
 	res, err := acc.DoFormRequest(url.Values{
@@ -223,7 +223,14 @@ func (acc *Account) Examresults(semesterID string) ([][]string, error) {
 	scrapeTableBody(document, func(i int, tr *goquery.Selection) {
 		var exam []string
 		tr.Find("td").Each(func(j int, td *goquery.Selection) {
-			if j < 4 {
+			if j == 0 {
+				text := strings.SplitN(scrapeText(td), "\n", 2)[0]
+				IDandName := strings.SplitN(text, "\u00a0 \u00a0", 2)
+				if len(IDandName) == 1 {
+					exam = append(exam, "")
+				}
+				exam = append(exam, IDandName...)
+			} else if j < 4 {
 				exam = append(exam, strings.SplitN(scrapeText(td), "\n", 2)[0])
 			}
 		})
