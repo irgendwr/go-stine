@@ -11,7 +11,7 @@ import (
 )
 
 const appname = "stine"
-const description = "STiNE CLI tool"
+const description = "STiNE CLI"
 const longDescription = ""
 
 // defaultCfgFile is the default config file name without extention
@@ -19,19 +19,14 @@ const defaultCfgFile = "." + appname
 const defaultCfgFileType = "yaml"
 const envPrefix = appname
 
-// nolint: gochecknoglobals
-var (
-	version = "dev"
-	commit  = ""
-	date    = ""
-	builtBy = ""
-)
-
 // cfgFile contains the config file path if set by a CLI flag
 var cfgFile string
 
 // printVersion is true when version flag is set
 var printVersion bool
+
+// verbose is a flag to enable verbose output
+var verbose bool
 
 // semester is a flag used to specify a semester for: exams, examresults
 var semester string
@@ -46,8 +41,7 @@ var rootCmd = &cobra.Command{
 	Long:  longDescription,
 	Run: func(cmd *cobra.Command, args []string) {
 		if printVersion {
-			fmt.Println(description)
-			fmt.Println(buildVersion(version, commit, date))
+			versionCmd.Run(cmd, args)
 			return
 		}
 
@@ -70,10 +64,11 @@ func init() {
 	log.SetFlags(log.Ltime)
 
 	// Define flags
-	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "config file (default is "+defaultCfgFile+"."+defaultCfgFileType+" in program dir, CWD or $HOME)")
-	rootCmd.PersistentFlags().StringP("username", "u", "", "username")
-	rootCmd.PersistentFlags().BoolP("nocache", "n", true, "disable session cache")
-	rootCmd.Flags().BoolVarP(&printVersion, "version", "v", false, "show version and exit")
+	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "Config file (default is "+defaultCfgFile+"."+defaultCfgFileType+" in program dir, CWD or $HOME)")
+	rootCmd.PersistentFlags().StringP("username", "u", "", "Username")
+	rootCmd.PersistentFlags().BoolP("nocache", "n", true, "Disable session cache")
+	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "w", false, "Provide a more verbose output")
+	rootCmd.Flags().BoolVarP(&printVersion, "version", "v", false, "Show version and exit")
 
 	// Bind flags to config values
 	viper.BindPFlag("username", rootCmd.PersistentFlags().Lookup("username"))
@@ -123,21 +118,7 @@ func initConfig() {
 	viper.SetEnvPrefix(envPrefix)
 
 	// If a config file is found, read it in
-	if err := viper.ReadInConfig(); err == nil {
+	if err := viper.ReadInConfig(); err == nil && verbose {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
 	}
-}
-
-func buildVersion(version, commit, date string) string {
-	var result = fmt.Sprintf("version: %s", version)
-	if commit != "" {
-		result = fmt.Sprintf("%s\ncommit: %s", result, commit)
-	}
-	if date != "" {
-		result = fmt.Sprintf("%s\nbuilt at: %s", result, date)
-	}
-	if builtBy != "" {
-		result = fmt.Sprintf("%s\nbuilt by: %s", result, builtBy)
-	}
-	return result
 }
