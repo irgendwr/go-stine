@@ -7,14 +7,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// exportCmd represents the export command
-var exportCmd = &cobra.Command{
+// scheduleExportCmd represents the export command
+var scheduleExportCmd = &cobra.Command{
 	Use:   "export <date>",
-	Short: "Exports the scheduler for a given month/week",
-	Long: `Exports the scheduler for a given month or week.
+	Short: "Exports the schedule of a given month/week",
+	Long: `Exports the schedule of a given month or week.
 
 <date> can be either a month (e.g. Y2020M06) or a week (e.g. Y2020W25).
-By default the scheduler will be exported as an UTF-16 LE encoded .ics file named <date>.ics in your CWD.`,
+By default the schedule will be exported as an UTF-16 LE encoded .ics file named <date>.ics in your CWD.`,
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) != 1 {
 			return fmt.Errorf("expected a date as argument, received %d arguments instead", len(args))
@@ -52,7 +52,7 @@ By default the scheduler will be exported as an UTF-16 LE encoded .ics file name
 }
 
 func init() {
-	schedulerCmd.AddCommand(exportCmd)
+	scheduleCmd.AddCommand(scheduleExportCmd)
 
-	exportCmd.Flags().StringVarP(&output, "output", "o", "", "output file (default: <date>.ics)")
+	scheduleExportCmd.Flags().StringVarP(&output, "output", "o", "", "output file (default: <date>.ics)")
 }
