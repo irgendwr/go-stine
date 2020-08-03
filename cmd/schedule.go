@@ -47,13 +47,16 @@ var scheduleCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		for _, schedule := range schedules {
+		for i, schedule := range schedules {
+			if i != 0 {
+				fmt.Println()
+			}
+
 			color.New(color.Bold).Println(schedule.Date)
 			tbl := table.New("ID", "Name", "Teachers", "Time", "Room")
 			tbl.WithHeaderFormatter(color.New(color.Underline).SprintfFunc())
 			tbl.SetRows(schedule.Entries)
 			tbl.Print()
-			fmt.Println()
 		}
 	},
 }
