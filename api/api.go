@@ -54,6 +54,9 @@ type Account struct {
 	session string
 }
 
+// Schedule represents a schedule for a date.
+// Date is formatted by STiNE, e.g. as "Mo, 13. Jul. 2020".
+// Entries consist of: Course ID, Name, Teachers, Time (Start/End), Room.
 type Schedule struct {
 	Date    string
 	Entries [][]string
