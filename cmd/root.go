@@ -51,11 +51,8 @@ var rootCmd = &cobra.Command{
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
-func Execute() {
-	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
+func Execute() error {
+	return rootCmd.Execute()
 }
 
 func init() {
@@ -66,7 +63,7 @@ func init() {
 	// Define flags
 	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "Config file (default is "+defaultCfgFile+"."+defaultCfgFileType+" in program dir, CWD or $HOME)")
 	rootCmd.PersistentFlags().StringP("username", "u", "", "Username")
-	rootCmd.PersistentFlags().BoolP("nocache", "n", true, "Disable session cache")
+	rootCmd.PersistentFlags().Bool("nocache", true, "Disable session cache")
 	rootCmd.PersistentFlags().BoolVar(&verbose, "verbose", false, "Provide a more verbose output")
 	rootCmd.Flags().BoolVarP(&printVersion, "version", "v", false, "Show version and exit")
 
