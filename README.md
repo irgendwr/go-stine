@@ -71,6 +71,11 @@ Export a schedule: `stine schedule export Y2020M07 -o ./2020_07.ics`
 
 Run `make`.
 
+## Related Projects
+
+- [felsenhower/stine_calendar_bot](https://github.com/felsenhower/stine_calendar_bot) - Automatic calendar download bot for STiNE
+- [Flova/ModernStineTheme](https://github.com/Flova/ModernStineTheme) - A better STiNE CSS theme
+
 ## Contributing
 
 Contributions are welcome! Feel free to open an issue, or even better: submit a pull-request.
