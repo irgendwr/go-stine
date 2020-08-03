@@ -1,10 +1,10 @@
 # go-stine
 
-![Build status](https://github.com/irgendwr/go-stine/workflows/build/badge.svg)
-![Release status](https://github.com/irgendwr/go-stine/workflows/release/badge.svg)
+[![Build status](https://github.com/irgendwr/go-stine/workflows/build/badge.svg)](https://github.com/irgendwr/go-stine/actions?query=workflow%3Abuild)
+[![Release status](https://github.com/irgendwr/go-stine/workflows/release/badge.svg)](https://github.com/irgendwr/go-stine/actions?query=workflow%3Arelease)
 [![GitHub Release](https://img.shields.io/github/release/irgendwr/go-stine.svg)](https://github.com/irgendwr/go-stine/releases)
 
-STiNE CLI / library written in/for [golang](https://golang.org/).
+[STiNE](https://www.stine.uni-hamburg.de) CLI/library written in [Go](https://golang.org/).
 
 You can find more details about STiNE here:
 
@@ -51,11 +51,17 @@ List of commands and flags: `stine help`
 
 ### Examples
 
-Export a schedule: `stine scheduler export Y2020M07 -o ./2020_07.ics`
-
 List exams: `stine exams`
 
 List all exam results: `stine examresults -a`
+
+Show schedule of a given day: `stine schedule 06.07 --day`
+
+Show schedule of the current week: `stine schedule --week`
+
+Show schedule of next week: `stine schedule --next --week`
+
+Export a schedule: `stine schedule export Y2020M07 -o ./2020_07.ics`
 
 ## Build
 
