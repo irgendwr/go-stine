@@ -21,7 +21,7 @@ builds:
       - -X 'github.com/irgendwr/go-stine/cmd.builtBy=goreleaser{{ if index .Env "GOVERSION" }} with {{.Env.GOVERSION}}{{ end }}'
     goos:
       - linux
-      #- darwin
+      - darwin
       - windows
     goarch:
       - amd64
