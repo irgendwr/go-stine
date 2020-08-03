@@ -2,6 +2,7 @@
 
 [![Build status](https://github.com/irgendwr/go-stine/workflows/build/badge.svg)](https://github.com/irgendwr/go-stine/actions?query=workflow%3Abuild)
 [![Release status](https://github.com/irgendwr/go-stine/workflows/release/badge.svg)](https://github.com/irgendwr/go-stine/actions?query=workflow%3Arelease)
+[![Go Report Card](https://goreportcard.com/badge/github.com/irgendwr/go-stine)](https://goreportcard.com/report/github.com/irgendwr/go-stine)
 [![GitHub Release](https://img.shields.io/github/release/irgendwr/go-stine.svg)](https://github.com/irgendwr/go-stine/releases)
 
 [STiNE](https://www.stine.uni-hamburg.de) CLI/library written in [Go](https://golang.org/).
