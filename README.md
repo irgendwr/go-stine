@@ -11,6 +11,10 @@ You can find more details about STiNE here:
 - https://www2.informatik.uni-hamburg.de/fachschaft/wiki/index.php/STiNE
 - https://www2.informatik.uni-hamburg.de/fachschaft/wiki/index.php/STiNE-Interna
 
+## Demo
+
+[![asciicast](https://asciinema.org/a/351399.svg)](https://asciinema.org/a/351399)
+
 ## Installation
 
 ### Linux
