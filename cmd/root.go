@@ -14,7 +14,7 @@ const appname = "stine"
 const description = "STiNE CLI"
 const longDescription = ""
 
-// defaultCfgFile is the default config file name without extention
+// defaultCfgFile is the default config file name without extension
 const defaultCfgFile = "." + appname
 const defaultCfgFileType = "yaml"
 const envPrefix = appname
@@ -31,10 +31,10 @@ var verbose bool
 // semester is a flag used to specify a semester for: exams, examresults
 var semester string
 
-// output is a flag used to specify an output file for: sheduler export
+// output is a flag used to specify an output file for: scheduler export
 var output string
 
-// rootCmd represents the base command when called without any subcommands
+// rootCmd represents the base command when called without any sub-commands
 var rootCmd = &cobra.Command{
 	Use:   appname,
 	Short: description,
@@ -76,10 +76,10 @@ func init() {
 	viper.SetDefault("nocache", false)
 }
 
-// initConfig reads in config file and ENV variables if set.
+// initConfig reads in config file and environment variables if set.
 func initConfig() {
 	if printVersion {
-		// skip reading config when printVersionis set
+		// skip reading config when printing version
 		return
 	}
 

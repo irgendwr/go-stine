@@ -150,7 +150,7 @@ func (acc *Account) SessionValid() error {
 
 // Scheduler returns an array of schedules.
 // If given, date must be formatted as: DD.MM.YYYY; default is current date.
-// Skip can be emtpy, "N" (next) or "P" (previous).
+// Skip can be empty, "N" (next) or "P" (previous).
 // View can be "0" (day) or "1" (week).
 func (acc *Account) Scheduler(date, skip, view string) ([]Schedule, error) {
 	var schedules []Schedule
@@ -192,7 +192,7 @@ func (acc *Account) Scheduler(date, skip, view string) ([]Schedule, error) {
 
 			s := len(schedules)
 			if s == 0 {
-				// missing schedule header --> sheduler is probably empty
+				// missing schedule header --> scheduler is probably empty
 				return
 			}
 			schedule := &schedules[s-1]
