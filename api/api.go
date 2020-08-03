@@ -21,6 +21,21 @@ const appName = "CampusNet"
 
 const defaultTimeout = 15 * time.Second
 
+// SkipNone means: do not skip (default)
+const SkipNone = ""
+
+// SkipNext means: skip to next day/week
+const SkipNext = "N"
+
+// SkipPrev means: skip to previous day/week
+const SkipPrev = "P"
+
+// ScheduleDay means: show day view
+const ScheduleDay = "0"
+
+// ScheduleWeek means: show week view
+const ScheduleWeek = "1"
+
 var reRefresh = regexp.MustCompile(`ARGUMENTS=-N(\d+),-N(\d+)`)
 var reFiletransfer = regexp.MustCompile(`href=["'](\/scripts\/filetransfer\.exe\?\S+)["']`)
 var reSpace = regexp.MustCompile(`\s+`)
@@ -37,6 +52,11 @@ var cnscCookieURL = url.URL{
 type Account struct {
 	client  *http.Client
 	session string
+}
+
+type Schedule struct {
+	Date    string
+	Entries [][]string
 }
 
 // NewAccount creates a new Account.
@@ -126,6 +146,72 @@ func (acc *Account) SessionValid() error {
 	}
 
 	return nil
+}
+
+// Scheduler returns an array of schedules.
+// If given, date must be formatted as: DD.MM.YYYY; default is current date.
+// Skip can be emtpy, "N" (next) or "P" (previous).
+// View can be "0" (day) or "1" (week).
+func (acc *Account) Scheduler(date, skip, view string) ([]Schedule, error) {
+	var schedules []Schedule
+
+	res, err := acc.DoFormRequest(url.Values{
+		"APPNAME":   {appName},
+		"PRGNAME":   {"SCHEDULERPRINT"},
+		"ARGUMENTS": {"sessionno,menuid,date,skip,view"},
+		"sessionno": {acc.session},
+		"menuid":    {"000000"}, // orig: 000267
+		"date":      {date},
+		"skip":      {skip},
+		"view":      {view},
+	})
+	if err != nil {
+		return schedules, err
+	}
+
+	defer res.Body.Close()
+
+	document, err := goquery.NewDocumentFromReader(res.Body)
+	if err != nil {
+		return schedules, err
+	}
+
+	scrapeTableBody(document, func(i int, tr *goquery.Selection) {
+		tr.Find("td").Each(func(j int, td *goquery.Selection) {
+			if td.HasClass("tbhead") {
+				if colspan, ok := td.Attr("colspan"); ok && colspan == "100%" {
+					schedules = append(schedules, Schedule{
+						Date: scrapeText(td),
+					})
+				}
+				return
+			} else if !td.HasClass("tbdata") { // tbsubhead, etc. --> don't care
+				// skip
+				return
+			}
+
+			s := len(schedules)
+			if s == 0 {
+				// missing schedule header --> sheduler is probably empty
+				return
+			}
+			schedule := &schedules[s-1]
+
+			if j == 0 {
+				schedule.Entries = append(schedule.Entries, []string{strings.SplitN(scrapeText(td), "\n", 2)[0]})
+			} else if j < 5 {
+				e := len(schedule.Entries)
+				if e == 0 {
+					// invalid layout
+					return
+				}
+				entries := &schedule.Entries[e-1]
+				*entries = append(*entries, strings.SplitN(scrapeText(td), "\n", 2)[0])
+			}
+		})
+	})
+
+	return schedules, nil
 }
 
 // SchedulerExport exports the schedule of a given month or week as an .ics file.
